@@ -139,10 +139,6 @@ config = {
 			{ 
 				test: /\.(html|tpl)$/, 
 				use: ['html-loader'] 
-			},
-			{ 
-				test: /\.art$/, 
-				use: ['art-template-loader'] 
 			}
 		]
 	},

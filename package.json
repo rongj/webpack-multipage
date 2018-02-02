@@ -1,19 +1,15 @@
 {
-  "name": "webpack-multipage-cli",
+  "name": "webpack-multipage",
   "version": "1.0.0",
-  "description": "a multipage website based on webpack",
+  "description": "develop multipage static pages with webpack & gulp",
   "main": "index.js",
   "scripts": {
     "dev": "set NODE_ENV=development&& webpack-dev-server --hot --inline",
     "build": "set NODE_ENV=production&& gulp clean && webpack --progress --profile --colors --config webpack.config.js && gulp"
   },
-  "keywords": [
-    "webpack"
-  ],
-  "author": "cathy yang",
-  "license": "ISC",
+  "author": "rongj <10983304@qq.com>",
+  "private": true,
   "devDependencies": {
-    "art-template-loader": "^1.2.2",
     "babel": "^6.23.0",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
@@ -41,7 +37,6 @@
     "webpack-hot-middleware": "^2.18.0"
   },
   "dependencies": {
-    "art-template": "^4.5.1",
     "fastclick": "^1.0.6",
     "jquery": "^3.2.1"
   }

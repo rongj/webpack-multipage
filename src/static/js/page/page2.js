@@ -1,3 +1,3 @@
 import 'static/css/page/page2'
 
-$util.setTitle('page two')
+$('body').append('<h1>use js 2</h1>')

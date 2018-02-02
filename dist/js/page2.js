@@ -1,1 +1,1 @@
-webpackJsonp([1],{4:function(t,e){},8:function(t,e,i){"use strict";i(4),$util.setTitle("page two")}},[8]);
+webpackJsonp([0],{2:function(e,n){},5:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var c=t(2),o=(t.n(c),document.body),u=document.createElement("h1");u.innerHTML="use ts 2",o.appendChild(u)}},[5]);

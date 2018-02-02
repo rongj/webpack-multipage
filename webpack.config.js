@@ -4,11 +4,16 @@ var path = require('path');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var glob = require('glob');
 
-var env = process.env.NODE_ENV || 'production';
+var env = process.env.NODE_ENV;
+
+// 使用typescript编译开发发布
+var isbuild = env.indexOf('build') > -1
+
+var jsType = env.indexOf('ts') > -1 ? 'ts' : 'js'
 
 var config = {};
 
-var output = env === 'production' ? {
+var output = isbuild ? {
 	path: path.resolve(__dirname, 'dist'),
 	publicPath: '', 
 	filename: 'js/[name].js?[chunkhash:8]'
@@ -18,8 +23,8 @@ var output = env === 'production' ? {
 	filename: 'js/[name].js'
 };
 
-var extractCss = env === 'production' ? new ExtractTextPlugin('css/[name].css?[chunkhash:8]') : new ExtractTextPlugin('css/[name].css');
-var commonsJs = env === 'production' ? new webpack.optimize.CommonsChunkPlugin({
+var extractCss = isbuild ? new ExtractTextPlugin('css/[name].css?[chunkhash:8]') : new ExtractTextPlugin('css/[name].css');
+var commonsJs = isbuild ? new webpack.optimize.CommonsChunkPlugin({
 	name: 'vendor', 
 	filename: 'js/vendor.js?[chunkhash:8]'
 }) : new webpack.optimize.CommonsChunkPlugin({
@@ -38,7 +43,7 @@ var uglifyJs = new webpack.optimize.UglifyJsPlugin({
 	}
 });
 
-var devServer = env === 'production' ? {} : {
+var devServer = isbuild ? {} : {
 	contentBase: path.resolve(__dirname),
 	compress: true,
 	historyApiFallback: true,
@@ -50,8 +55,8 @@ var devServer = env === 'production' ? {} : {
 
 // 入口文件
 var entries = (function() {
-	var jsDir = path.resolve(__dirname, 'src/static/js/page');
-	var entryFiles = glob.sync(jsDir + '/*.js');
+	var jsDir = path.resolve(__dirname, 'src/static/'+jsType+'/page');
+	var entryFiles = glob.sync(jsDir + '/*.'+jsType);
 	var map = {};
 
 	entryFiles.forEach(function(filePath) {
@@ -81,8 +86,8 @@ var htmlPages = (function() {
 				return order1 - order2;
 			},
 			minify: {
-				removeComments: env === 'production' ? true : false,
-				collapseWhitespace: env === 'production' ? true : false
+				removeComments: isbuild ? true : false,
+				collapseWhitespace: isbuild ? true : false
 			}
 		}));
 	});
@@ -91,8 +96,7 @@ var htmlPages = (function() {
 
 config = {
 	entry: Object.assign(entries, {
-			main: path.resolve(__dirname, 'src/main.js'),
-			vendor: ['jquery']
+			main: path.resolve(__dirname, 'src/main.'+jsType)
 		}),
 	output: output,
 	devServer: devServer,
@@ -112,7 +116,7 @@ config = {
 					use: [{
 						loader: 'css-loader',
 						options: {
-							minimize: env === 'production' ? true : false
+							minimize: isbuild ? true : false
 						}
 					}]
 				})
@@ -136,6 +140,11 @@ config = {
 				}, 
 				exclude: /node_modules/
 			},
+			{
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+                exclude: /node_modules/,
+            },
 			{ 
 				test: /\.(html|tpl)$/, 
 				use: ['html-loader'] 
@@ -163,7 +172,7 @@ config = {
 	].concat(htmlPages)
 };
 
-if(env === 'production') {
+if(isbuild) {
 	config.plugins.unshift(uglifyJs)
 } else {
 	config.plugins.unshift(hotModule);
